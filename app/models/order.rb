@@ -1,8 +1,8 @@
 class Order < ApplicationRecord
+  STATUSES = %w[pending paid shipped cancelled]
   belongs_to :user
   belongs_to :product
   
-  STATUSES = %w[pending paid shipped cancelled]
   validates :quantity, numericality: { greater_than: 0 }
   validates :status, inclusion: { in: STATUSES } 
   before_save :set_total_price

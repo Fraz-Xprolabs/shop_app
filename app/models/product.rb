@@ -9,7 +9,7 @@ class Product < ApplicationRecord
   validates :category, inclusion: { in: %w[Electronics Clothing Home Beauty Sports Others] }, allow_blank: true
 
   scope :available, -> { where(available: true).where('stock > ?', 0) }
-  scope :by_category, ->(cat) { where(category: cat) }
+  scope :by_category, ->(value) { where(category: value) }
 
   before_save :mark_unavailable_if_out_of_stock
 

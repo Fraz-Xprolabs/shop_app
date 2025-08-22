@@ -1,18 +1,18 @@
 class OrdersController < ApplicationController
-  before_action :authenticate_user!
   before_action :set_product
+  before_action :build_order, only: [:create]
 
   def index
-    @orders = @product.orders.where(user: current_user)
+    @orders = product_orders.where(user: current_user)
   end
 
   def show
-    @order = @product.orders.find(params[:id])
+    @order = product_orders.find(params[:id])
     authorize_user!
   end
 
   def create
-    @order = @product.orders.build(order_params.merge(user: current_user))
+    @order = product_orders.build(order_params.merge(user: current_user))
     if @order.save
       redirect_to [@product, @order], notice: "Order placed successfully."
     else
@@ -24,6 +24,7 @@ class OrdersController < ApplicationController
 
   def set_product
     @product = Product.find(params[:product_id])
+    product_orders = @product.orders
   end
 
   def authorize_user!

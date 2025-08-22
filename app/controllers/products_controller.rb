@@ -1,6 +1,7 @@
 class ProductsController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show]
+  skip_before_action :authenticate_user!, only: [:index, :show]
   before_action :set_product, only: [:show, :edit, :update, :destroy]
+  before_action: build_product, only: [:new, :create]
 
   def index
     @products = Product.all
@@ -8,12 +9,10 @@ class ProductsController < ApplicationController
 
   def show; end
 
-  def new
-    @product = current_user.products.build
-  end
+  def new; end
 
   def create
-    @product = current_user.products.build(product_params)
+    @product.assign_attributes(product_params)
     if @product.save
       redirect_to @product, notice: "Product created successfully."
     else
@@ -52,5 +51,9 @@ class ProductsController < ApplicationController
 
   def product_params
     params.require(:product).permit(:name, :description, :price, :stock, :category, :available)
+  end
+
+  def build_product
+    @product = current_user.products.build
   end
 end
